@@ -6,11 +6,13 @@ import torch
 app = Potassium("my_app")
 
 # @app.init runs at startup, and loads models into the app's context
+
+
 @app.init
 def init():
     device = 0 if torch.cuda.is_available() else -1
     model = pipeline('fill-mask', model='bert-base-uncased', device=device)
-   
+
     context = {
         "model": model
     }
@@ -18,6 +20,8 @@ def init():
     return context
 
 # @app.handler runs for every call
+
+
 @app.handler()
 def handler(context: dict, request: Request) -> Response:
     prompt = request.json.get("prompt")
@@ -25,9 +29,10 @@ def handler(context: dict, request: Request) -> Response:
     outputs = model(prompt)
 
     return Response(
-        json = {"outputs": outputs[0]}, 
+        json={"outputs": outputs},
         status=200
     )
+
 
 if __name__ == "__main__":
     app.serve()
